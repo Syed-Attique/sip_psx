@@ -1,3 +1,82 @@
+def _validate_inputs(
+    starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+    brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
+    cgt_filer_pct, cgt_nonfiler_pct,
+):
+    numeric_fields = {
+        "starting_amount": starting_amount,
+        "monthly_investment": monthly_investment,
+        "years": years,
+        "annual_return_pct": annual_return_pct,
+        "inflation_pct": inflation_pct,
+        "brokerage_pct": brokerage_pct,
+        "sst_pct_of_brokerage": sst_pct_of_brokerage,
+        "cdc_pct": cdc_pct,
+        "annual_flat_fee": annual_flat_fee,
+        "cgt_filer_pct": cgt_filer_pct,
+        "cgt_nonfiler_pct": cgt_nonfiler_pct,
+    }
+
+    # 1. Every input must actually be a real number - not text, None, a list,
+    #    or a boolean (bool is secretly a subclass of int in Python, so
+    #    True/False would otherwise sneak past a plain int/float check).
+    for name, value in numeric_fields.items():
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{name} must be a number, got {type(value).__name__}: {value!r}")
+
+    # 2. Money amounts can't be negative, and at least one of them must be
+    #    positive - otherwise there's nothing to actually calculate.
+    if starting_amount < 0:
+        raise ValueError(f"starting_amount cannot be negative, got {starting_amount}")
+    if monthly_investment < 0:
+        raise ValueError(f"monthly_investment cannot be negative, got {monthly_investment}")
+    if starting_amount == 0 and monthly_investment == 0:
+        raise ValueError(
+            "At least one of starting_amount or monthly_investment must be "
+            "greater than 0 - there's nothing to calculate otherwise"
+        )
+
+    # 3. Duration must be positive and long enough to cover at least 1 month.
+    if years <= 0:
+        raise ValueError(f"years must be greater than 0, got {years}")
+    if round(years * 12) < 1:
+        raise ValueError(f"years={years} is too short to produce even a single month of investment")
+
+    # 4. Return and inflation can't imply losing more than 100% of value.
+    #    This isn't just a business-sense rule - Python's ** operator on a
+    #    negative base with a fractional exponent silently returns a complex
+    #    number instead of raising an error, which corrupts every downstream
+    #    calculation without an obvious crash at the point of the mistake.
+    if annual_return_pct <= -100:
+        raise ValueError(
+            f"annual_return_pct must be greater than -100 "
+            f"(a -100% return means total loss), got {annual_return_pct}"
+        )
+    if inflation_pct <= -100:
+        raise ValueError(
+            f"inflation_pct must be greater than -100 "
+            f"(prices can't fall to zero or below), got {inflation_pct}"
+        )
+
+    # 5. Fees and charges can't be negative.
+    for name, value in [
+        ("brokerage_pct", brokerage_pct),
+        ("sst_pct_of_brokerage", sst_pct_of_brokerage),
+        ("cdc_pct", cdc_pct),
+        ("annual_flat_fee", annual_flat_fee),
+    ]:
+        if value < 0:
+            raise ValueError(f"{name} cannot be negative, got {value}")
+
+    # 6. Tax rates must be sensible percentages.
+    for name, value in [
+        ("cgt_filer_pct", cgt_filer_pct),
+        ("cgt_nonfiler_pct", cgt_nonfiler_pct),
+    ]:
+        if value < 0 or value > 100:
+            raise ValueError(f"{name} must be between 0 and 100, got {value}")
+
+
 def calculate_sip(
     starting_amount,        # lump sum invested in month 1, alongside the SIP amount
     monthly_investment,     # rupees invested every month
@@ -11,6 +90,12 @@ def calculate_sip(
     cgt_filer_pct=15.0,     # capital gains tax rate if you're a filer
     cgt_nonfiler_pct=30.0,  # capital gains tax rate if you're a non-filer
 ):
+    _validate_inputs(
+        starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+        brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
+        cgt_filer_pct, cgt_nonfiler_pct,
+    )
+
     months = round(years * 12)
 
     # Step A — annual rate to monthly rate (compounding-safe, not annual/12)
