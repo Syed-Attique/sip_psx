@@ -1,10 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from calculator import calculate_sip
 
 app = Flask(__name__)
 
 
 @app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/api/health")
 def health_check():
     return {"status": "SIP calculator API is running"}
 
