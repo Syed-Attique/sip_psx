@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSE-100 SIP Calculator</title>
+    <title>SIP Calculator</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -18,7 +20,8 @@
         <header class="masthead">
             <div class="masthead-eyebrow">PAKISTAN STOCK EXCHANGE &middot; SIP PROJECTION</div>
             <h1>KSE&#8209;100 SIP Calculator</h1>
-            <p class="masthead-sub">Real Projection with &mdash; net of brokerage, CDC charges, Sindh Sales Tax, capital gains tax, and inflation.</p>
+            <p class="masthead-sub">Real Projection with &mdash; net of brokerage, CDC charges, Sindh Sales Tax, capital
+                gains tax, and inflation.</p>
         </header>
 
         <form id="calc-form" class="layout">
@@ -44,7 +47,8 @@
                 <div class="field">
                     <label for="annual_return_pct">Assumed KSE&#8209;100 annual return (%)</label>
                     <input type="number" id="annual_return_pct" value="14" step="0.5">
-                    <p class="hint">Your own assumption, not a forecast. KSE&#8209;100's 30&#8209;year CAGR has run near 14%.</p>
+                    <p class="hint">Your own assumption, not a forecast. KSE&#8209;100's 30&#8209;year CAGR has run near
+                        14%.</p>
                 </div>
 
                 <div class="field">
@@ -159,7 +163,9 @@
 
                     </div>
 
-                    <p class="disclaimer">Return and inflation figures are your own assumptions, not forecasts. Tax and fee rates reflect a 2025&ndash;26 snapshot and change with each Finance Act &mdash; verify current rates with NCCPL/FBR. Not financial advice.</p>
+                    <p class="disclaimer">Return and inflation figures are your own assumptions, not forecasts. Tax and
+                        fee rates reflect a 2025&ndash;26 snapshot and change with each Finance Act &mdash; verify
+                        current rates with NCCPL/FBR. Not financial advice.</p>
                 </div>
             </section>
 
