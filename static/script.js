@@ -8,12 +8,16 @@ function readInputs() {
     "starting_amount", "monthly_investment", "years",
     "annual_return_pct", "inflation_pct",
     "brokerage_pct", "sst_pct_of_brokerage", "cdc_pct",
-    "annual_flat_fee", "cgt_filer_pct", "cgt_nonfiler_pct",
+    "annual_flat_fee",
   ];
   const payload = {};
   for (const id of ids) {
     payload[id] = parseFloat(document.getElementById(id).value);
   }
+  
+  const isFiler = document.getElementById("is_filer").checked;
+  payload["cgt_filer_pct"] = isFiler ? 15.0 : 30.0;
+  payload["cgt_nonfiler_pct"] = payload["cgt_filer_pct"];
   return payload;
 }
 
@@ -62,10 +66,10 @@ async function runCalculation(event) {
   document.getElementById("out-net-filer").textContent = fmt(data.net_value_filer);
   document.getElementById("out-real-filer").textContent = fmt(data.real_value_filer);
 
-  document.getElementById("cgt-nonfiler-rate").textContent = payload.cgt_nonfiler_pct;
-  document.getElementById("out-cgt-nonfiler").textContent = "(" + fmt(data.cgt_nonfiler) + ")";
-  document.getElementById("out-net-nonfiler").textContent = fmt(data.net_value_nonfiler);
-  document.getElementById("out-real-nonfiler").textContent = fmt(data.real_value_nonfiler);
+  document.querySelector(".calc-btn").classList.add("calculated");
 }
 
 document.getElementById("calc-form").addEventListener("submit", runCalculation);
+document.getElementById("calc-form").addEventListener("input", function() {
+  document.querySelector(".calc-btn").classList.remove("calculated");
+});

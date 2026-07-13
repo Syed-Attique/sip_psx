@@ -1,189 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KSE-100 SIP Calculator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KSE-100 SIP Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
-<div class="wrap">
+    <div class="wrap">
 
-  <header class="masthead">
-    <div class="masthead-eyebrow">PAKISTAN STOCK EXCHANGE &middot; SIP PROJECTION</div>
-    <h1>KSE&#8209;100 SIP Calculator</h1>
-    <p class="masthead-sub">A monthly investment plan into the KSE&#8209;100 index &mdash; net of brokerage, CDC charges, Sindh Sales Tax, capital gains tax, and inflation.</p>
-  </header>
+        <header class="masthead">
+            <div class="masthead-eyebrow">PAKISTAN STOCK EXCHANGE &middot; SIP PROJECTION</div>
+            <h1>KSE&#8209;100 SIP Calculator</h1>
+            <p class="masthead-sub">Real Projection with &mdash; net of brokerage, CDC charges, Sindh Sales Tax, capital gains tax, and inflation.</p>
+        </header>
 
-  <form id="calc-form" class="layout">
+        <form id="calc-form" class="layout">
 
-    <section class="panel">
-      <h2 class="panel-title">Plan inputs</h2>
+            <section class="panel">
+                <h2 class="panel-title">Plan inputs</h2>
 
-      <div class="field">
-        <label for="starting_amount">Starting amount (Rs) &mdash; savings invested in month 1</label>
-        <input type="number" id="starting_amount" value="100000" min="0" step="1000">
-      </div>
+                <div class="field">
+                    <label for="starting_amount">Starting amount (Rs) &mdash; savings invested in 1st month</label>
+                    <input type="number" id="starting_amount" value="100000" min="0" step="1000">
+                </div>
 
-      <div class="field">
-        <label for="monthly_investment">Monthly investment (Rs)</label>
-        <input type="number" id="monthly_investment" value="20000" min="0" step="500">
-      </div>
+                <div class="field">
+                    <label for="monthly_investment">Monthly investment (Rs)</label>
+                    <input type="number" id="monthly_investment" value="20000" min="0" step="500">
+                </div>
 
-      <div class="field">
-        <label for="years">Duration (years)</label>
-        <input type="number" id="years" value="10" min="0.5" step="0.5">
-      </div>
+                <div class="field">
+                    <label for="years">Duration (years)</label>
+                    <input type="number" id="years" value="10" min="0.5" step="0.5">
+                </div>
 
-      <div class="field">
-        <label for="annual_return_pct">Assumed KSE&#8209;100 annual return (%)</label>
-        <input type="number" id="annual_return_pct" value="14" step="0.5">
-        <p class="hint">Your own assumption, not a forecast. KSE&#8209;100's 30&#8209;year CAGR has run near 14%.</p>
-      </div>
+                <div class="field">
+                    <label for="annual_return_pct">Assumed KSE&#8209;100 annual return (%)</label>
+                    <input type="number" id="annual_return_pct" value="14" step="0.5">
+                    <p class="hint">Your own assumption, not a forecast. KSE&#8209;100's 30&#8209;year CAGR has run near 14%.</p>
+                </div>
 
-      <div class="field">
-        <label for="inflation_pct">Assumed average inflation (%)</label>
-        <input type="number" id="inflation_pct" value="10" step="0.5">
-      </div>
-    </section>
+                <div class="field">
+                    <label for="inflation_pct">Assumed average inflation (%)</label>
+                    <input type="number" id="inflation_pct" value="10" step="0.5">
+                </div>
+            </section>
 
-    <section class="panel">
-      <h2 class="panel-title">Costs &amp; tax</h2>
+            <section class="panel">
+                <h2 class="panel-title">Costs &amp; tax</h2>
 
-      <div class="divider"><span>cost assumptions</span></div>
+                <div class="divider"><span>cost assumptions</span></div>
 
-      <div class="field-row">
-        <div class="field">
-          <label for="brokerage_pct">Brokerage per trade (%)</label>
-          <input type="number" id="brokerage_pct" value="0.15" min="0" step="0.01">
-        </div>
-        <div class="field">
-          <label for="sst_pct_of_brokerage">SST on brokerage (%)</label>
-          <input type="number" id="sst_pct_of_brokerage" value="13" min="0" step="0.5">
-        </div>
-      </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="brokerage_pct">Brokerage per trade (%)</label>
+                        <input type="number" id="brokerage_pct" value="0.15" min="0" step="0.01">
+                    </div>
+                    <div class="field">
+                        <label for="sst_pct_of_brokerage">SST on brokerage (%)</label>
+                        <input type="number" id="sst_pct_of_brokerage" value="13" min="0" step="0.5">
+                    </div>
+                </div>
 
-      <div class="field-row">
-        <div class="field">
-          <label for="cdc_pct">CDC handling (%)</label>
-          <input type="number" id="cdc_pct" value="0.02" min="0" step="0.005">
-        </div>
-        <div class="field">
-          <label for="annual_flat_fee">NCCPL/CDC annual fee (Rs)</label>
-          <input type="number" id="annual_flat_fee" value="700" min="0" step="50">
-        </div>
-      </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="cdc_pct">CDC handling (%)</label>
+                        <input type="number" id="cdc_pct" value="0.02" min="0" step="0.005">
+                    </div>
+                    <div class="field">
+                        <label for="annual_flat_fee">NCCPL/CDC annual fee (Rs)</label>
+                        <input type="number" id="annual_flat_fee" value="700" min="0" step="50">
+                    </div>
+                </div>
 
-      <div class="divider"><span>capital gains tax on exit</span></div>
+                <div class="divider"><span>capital gains tax on exit</span></div>
 
-      <div class="field-row">
-        <div class="field">
-          <label for="cgt_filer_pct">CGT &mdash; filer (%)</label>
-          <input type="number" id="cgt_filer_pct" value="15" min="0" max="100" step="0.5">
-        </div>
-        <div class="field">
-          <label for="cgt_nonfiler_pct">CGT &mdash; non&#8209;filer (%)</label>
-          <input type="number" id="cgt_nonfiler_pct" value="30" min="0" max="100" step="0.5">
-        </div>
-      </div>
+                <div class="field toggle-field">
+                    <label for="is_filer">Filer</label>
+                    <label class="switch">
+                        <input type="checkbox" id="is_filer" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
 
-      <button type="submit" class="calc-btn">Run projection</button>
-      <p id="error-msg" class="error-msg" role="alert"></p>
-    </section>
+                <button type="submit" class="calc-btn">Run projection</button>
+                <p id="error-msg" class="error-msg" role="alert"></p>
+            </section>
 
-    <section class="panel results-panel">
-      <h2 class="panel-title">Settlement slip &mdash; projected outcome</h2>
+            <section class="panel results-panel">
+                <h2 class="panel-title">Settlement slip &mdash; projected outcome</h2>
 
-      <div class="empty-state" id="empty-state">
-        <p>Set your inputs and run the projection.</p>
-      </div>
+                <div class="empty-state" id="empty-state">
+                    <p>Set your inputs and run the projection.</p>
+                </div>
 
-      <div id="results-content" class="hidden">
+                <div id="results-content" class="hidden">
 
-        <div class="slip">
-          <div class="slip-header">
-            <span>NCCPL / CDC &middot; PROJECTED SETTLEMENT</span>
-            <span id="slip-date"></span>
-          </div>
+                    <div class="slip">
+                        <div class="slip-header">
+                            <span>PROJECTED SETTLEMENT</span>
+                            <span id="slip-date"></span>
+                        </div>
 
-          <div class="slip-row">
-            <span class="slip-label">Total contributed</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-contributed">&mdash;</span>
-          </div>
-          <div class="slip-row cost">
-            <span class="slip-label">&minus; Purchase fees (brokerage + SST + CDC)</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-purchase-fees">&mdash;</span>
-          </div>
-          <div class="slip-row cost">
-            <span class="slip-label">&minus; NCCPL / CDC annual fees</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-annual-fees">&mdash;</span>
-          </div>
-          <div class="slip-row subtotal">
-            <span class="slip-label">Cost basis</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-cost-basis">&mdash;</span>
-          </div>
+                        <div class="slip-row">
+                            <span class="slip-label">Total contributed</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-contributed">&mdash;</span>
+                        </div>
+                        <div class="slip-row cost">
+                            <span class="slip-label">&minus; Purchase fees (brokerage + SST + CDC)</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-purchase-fees">&mdash;</span>
+                        </div>
+                        <div class="slip-row cost">
+                            <span class="slip-label">&minus; NCCPL / CDC annual fees</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-annual-fees">&mdash;</span>
+                        </div>
+                        <div class="slip-row subtotal">
+                            <span class="slip-label">Cost basis</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-cost-basis">&mdash;</span>
+                        </div>
 
-          <div class="slip-row total">
-            <span class="slip-label">Gross value at exit</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-gross">&mdash;</span>
-          </div>
-          <div class="slip-row gain">
-            <span class="slip-label">Capital gain</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-gain">&mdash;</span>
-          </div>
+                        <div class="slip-row total">
+                            <span class="slip-label">Gross value at exit</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-gross">&mdash;</span>
+                        </div>
+                        <div class="slip-row gain">
+                            <span class="slip-label">Capital gain</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-gain">&mdash;</span>
+                        </div>
 
-          <div class="slip-section-label">if you're a filer</div>
-          <div class="slip-row cost">
-            <span class="slip-label">&minus; CGT (<span id="cgt-filer-rate"></span>%)</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-cgt-filer">&mdash;</span>
-          </div>
-          <div class="slip-row total">
-            <span class="slip-label">Net value</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-net-filer">&mdash;</span>
-          </div>
-          <div class="slip-row">
-            <span class="slip-label">Real value, today's rupees</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-real-filer">&mdash;</span>
-          </div>
+                        <div class="slip-row cost" style="margin-top: 12px;">
+                            <span class="slip-label">&minus; CGT (<span id="cgt-filer-rate"></span>%)</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-cgt-filer">&mdash;</span>
+                        </div>
+                        <div class="slip-row total">
+                            <span class="slip-label">Net value</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-net-filer">&mdash;</span>
+                        </div>
+                        <div class="slip-row">
+                            <span class="slip-label">Real value, today's rupees</span>
+                            <span class="slip-dots"></span>
+                            <span class="slip-amount" id="out-real-filer">&mdash;</span>
+                        </div>
 
-          <div class="slip-section-label">if you're a non&#8209;filer</div>
-          <div class="slip-row cost">
-            <span class="slip-label">&minus; CGT (<span id="cgt-nonfiler-rate"></span>%)</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-cgt-nonfiler">&mdash;</span>
-          </div>
-          <div class="slip-row total">
-            <span class="slip-label">Net value</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-net-nonfiler">&mdash;</span>
-          </div>
-          <div class="slip-row">
-            <span class="slip-label">Real value, today's rupees</span>
-            <span class="slip-dots"></span>
-            <span class="slip-amount" id="out-real-nonfiler">&mdash;</span>
-          </div>
-        </div>
+                    </div>
 
-        <p class="disclaimer">Return and inflation figures are your own assumptions, not forecasts. Tax and fee rates reflect a 2025&ndash;26 snapshot and change with each Finance Act &mdash; verify current rates with NCCPL/FBR. Not financial advice.</p>
-      </div>
-    </section>
+                    <p class="disclaimer">Return and inflation figures are your own assumptions, not forecasts. Tax and fee rates reflect a 2025&ndash;26 snapshot and change with each Finance Act &mdash; verify current rates with NCCPL/FBR. Not financial advice.</p>
+                </div>
+            </section>
 
-  </form>
+        </form>
 
-</div>
+    </div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>
