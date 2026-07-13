@@ -86,8 +86,8 @@ Because this calculator exposes an API endpoint (`/api/calculate`), the followin
 
 Let's assume a simple scenario to see how the math works in action.
 - **Monthly Investment:** Rs. 10,000
-- **Annual Return:** 12% *(which means 1% per month)*
-- **Duration:** 1 Year *(12 months)*
+- **Annual Return:** 14% *(which means ~1.16% per month)*
+- **Duration:** 10 Years *(120 months)*
 
 **Step 1: Month 1 Purchase Fees**
 When you deposit Rs. 10,000, the broker buys shares. The system deducts the transaction fees:
@@ -98,18 +98,18 @@ When you deposit Rs. 10,000, the broker buys shares. The system deducts the tran
 - **Actual Invested Capital:** Rs. 9,981.05
 
 **Step 2: Month 1 Growth**
-Your actual capital now grows by the monthly return rate (1%).
-- `Rs. 9,981.05 × 1.01 = Rs. 10,080.86`
-At the end of Month 1, your portfolio balance is **Rs. 10,080.86**. 
+Your actual capital now grows by the monthly return rate (~1.16%).
+- `Rs. 9,981.05 × 1.0116 = Rs. 10,096.83`
+At the end of Month 1, your portfolio balance is **Rs. 10,096.83**. 
 
-*(This cycle repeats for all 12 months, adding a new Rs. 10,000 deposit and compounding the total balance every time).*
+*(This cycle repeats for all 120 months, adding a new Rs. 10,000 deposit and compounding the total balance every time).*
 
 **Step 3: Annual Flat Fee**
-At the end of Month 12, the system automatically deducts the NCCPL/CDC account maintenance fee (e.g., **Rs. 700**) from your final balance.
+At the end of every 12th month (Month 12, 24, 36...), the system automatically deducts the NCCPL/CDC account maintenance fee (e.g., **Rs. 700**) from your balance.
 
 **Step 4: Capital Gains Tax (CGT)**
-Assume after 12 months, your total portfolio has grown to **Rs. 128,000**.
-Since you deposited Rs. 10,000 twelve times, your total contribution is **Rs. 120,000**.
-- **Net Profit:** `128,000 - 120,000 = Rs. 8,000`
-- **Filer CGT (15%):** `8,000 × 0.15 = Rs. 1,200`
-- **Final Take-Home Amount:** `128,000 - 1,200 = Rs. 126,800`
+Assume after 10 years, your total portfolio has grown to **Rs. 2,500,000** (gross value).
+Since you deposited Rs. 10,000 every month for 120 months, your total contribution is **Rs. 1,200,000**.
+- **Net Profit:** `2,500,000 - 1,200,000 = Rs. 1,300,000` *(simplified by ignoring minor deducted fees for clarity)*
+- **Filer CGT (15%):** `1,300,000 × 0.15 = Rs. 195,000`
+- **Final Take-Home Amount:** `2,500,000 - 195,000 = Rs. 2,305,000`
