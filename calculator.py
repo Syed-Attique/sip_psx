@@ -26,10 +26,10 @@ def _validate_inputs(
 
     # 2. Money amounts can't be negative, and at least one of them must be
     #    positive - otherwise there's nothing to actually calculate.
-    if starting_amount < 0:
-        raise ValueError(f"starting_amount cannot be negative, got {starting_amount}")
-    if monthly_investment < 0:
-        raise ValueError(f"monthly_investment cannot be negative, got {monthly_investment}")
+    if starting_amount < 0 or starting_amount > 100_000_000_000:
+        raise ValueError(f"starting_amount must be between 0 and 100 Billion, got {starting_amount}")
+    if monthly_investment < 0 or monthly_investment > 100_000_000_000:
+        raise ValueError(f"monthly_investment must be between 0 and 100 Billion, got {monthly_investment}")
     if starting_amount == 0 and monthly_investment == 0:
         raise ValueError(
             "At least one of starting_amount or monthly_investment must be "
@@ -37,25 +37,21 @@ def _validate_inputs(
         )
 
     # 3. Duration must be positive and long enough to cover at least 1 month.
-    if years <= 0:
-        raise ValueError(f"years must be greater than 0, got {years}")
+    #    We also cap it at 100 years to prevent Serverless loop exhaustion (DoS).
+    if years <= 0 or years > 100:
+        raise ValueError(f"years must be between > 0 and 100, got {years}")
     if round(years * 12) < 1:
         raise ValueError(f"years={years} is too short to produce even a single month of investment")
 
     # 4. Return and inflation can't imply losing more than 100% of value.
-    #    This isn't just a business-sense rule - Python's ** operator on a
-    #    negative base with a fractional exponent silently returns a complex
-    #    number instead of raising an error, which corrupts every downstream
-    #    calculation without an obvious crash at the point of the mistake.
-    if annual_return_pct <= -100:
+    #    We also cap it at 5000% to prevent Math Overflow errors.
+    if annual_return_pct <= -100 or annual_return_pct > 5000:
         raise ValueError(
-            f"annual_return_pct must be greater than -100 "
-            f"(a -100% return means total loss), got {annual_return_pct}"
+            f"annual_return_pct must be between -99 and 5000, got {annual_return_pct}"
         )
-    if inflation_pct <= -100:
+    if inflation_pct <= -100 or inflation_pct > 5000:
         raise ValueError(
-            f"inflation_pct must be greater than -100 "
-            f"(prices can't fall to zero or below), got {inflation_pct}"
+            f"inflation_pct must be between -99 and 5000, got {inflation_pct}"
         )
 
     # 5. Fees and charges can't be negative.

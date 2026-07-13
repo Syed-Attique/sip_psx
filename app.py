@@ -1,7 +1,17 @@
 from flask import Flask, request, jsonify, render_template
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from calculator import calculate_sip
 
 app = Flask(__name__)
+
+# Initialize rate limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+)
 
 
 @app.route("/")
@@ -10,11 +20,13 @@ def index():
 
 
 @app.route("/api/health")
+@limiter.exempt
 def health_check():
     return {"status": "SIP calculator API is running"}
 
 
 @app.route("/api/calculate", methods=["POST"])
+@limiter.limit("30 per minute")
 def api_calculate():
     data = request.get_json(force=True, silent=True)
 
