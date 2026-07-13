@@ -76,8 +76,8 @@ async function runCalculation(event) {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="col-year">Year ${row.year}</td>
-        <td class="col-invested">PKR ${fmt(row.invested)}</td>
-        <td class="col-real">Rs. ${fmt(row.real_value)}</td>
+        <td class="col-invested">${fmt(row.invested)}</td>
+        <td class="col-real">${fmt(row.real_value)}</td>
       `;
       tbody.appendChild(tr);
     });
