@@ -171,6 +171,24 @@
 
         </form>
 
+        <div id="projection-table-container" class="panel hidden" style="margin-top: 20px; animation: slideUpFade 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.6s; opacity: 0;">
+            <h2 class="panel-title" style="text-align: center; font-size: 17px; margin-bottom: 20px;">Year-by-Year Projection</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin: -10px 0 24px;">Estimated purchasing power at the end of each year (Real Value).</p>
+            <div class="table-wrapper">
+                <table class="projection-table">
+                    <thead>
+                        <tr>
+                            <th>YEAR</th>
+                            <th>INVESTED</th>
+                            <th style="text-align: right;">REAL VALUE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projection-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>

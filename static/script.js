@@ -66,6 +66,23 @@ async function runCalculation(event) {
   document.getElementById("out-net-filer").textContent = fmt(data.net_value_filer);
   document.getElementById("out-real-filer").textContent = fmt(data.real_value_filer);
 
+  // Render the year-by-year table
+  if (data.yearly_breakdown && data.yearly_breakdown.length > 0) {
+    document.getElementById("projection-table-container").classList.remove("hidden");
+    const tbody = document.getElementById("projection-body");
+    tbody.innerHTML = "";
+    
+    data.yearly_breakdown.forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td class="col-year">Year ${row.year}</td>
+        <td class="col-invested">PKR ${fmt(row.invested)}</td>
+        <td class="col-real">Rs. ${fmt(row.real_value)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
   document.querySelector(".calc-btn").classList.add("calculated");
 }
 

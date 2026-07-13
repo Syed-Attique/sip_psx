@@ -73,6 +73,59 @@ def _validate_inputs(
             raise ValueError(f"{name} must be between 0 and 100, got {value}")
 
 
+def _calculate_yearly_breakdown(
+    starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+    brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
+    cgt_filer_pct, cgt_nonfiler_pct
+):
+    yearly_breakdown = []
+    
+    months = round(years * 12)
+    monthly_rate = (1 + annual_return_pct / 100) ** (1 / 12) - 1
+
+    balance = 0.0
+    total_contributed = 0.0
+    cost_basis = 0.0
+
+    for month in range(1, months + 1):
+        contribution = monthly_investment
+        if month == 1:
+            contribution += starting_amount
+
+        brokerage_fee = contribution * (brokerage_pct / 100)
+        sst_fee = brokerage_fee * (sst_pct_of_brokerage / 100)
+        cdc_fee = contribution * (cdc_pct / 100)
+        total_fee = brokerage_fee + sst_fee + cdc_fee
+        net_invested = contribution - total_fee
+
+        balance = (balance + net_invested) * (1 + monthly_rate)
+
+        if month % 12 == 0:
+            balance -= annual_flat_fee
+
+        total_contributed += contribution
+        cost_basis += net_invested
+
+        if month % 12 == 0:
+            current_year = month // 12
+            gross_value = balance
+            gain = max(0.0, gross_value - cost_basis)
+            
+            cgt = gain * (cgt_filer_pct / 100)
+            net_value = gross_value - cgt
+            
+            inflation_factor = (1 + inflation_pct / 100) ** current_year
+            real_value = net_value / inflation_factor
+            
+            yearly_breakdown.append({
+                "year": current_year,
+                "invested": total_contributed,
+                "real_value": real_value
+            })
+
+    return yearly_breakdown
+
+
 def calculate_sip(
     starting_amount,        # lump sum invested in month 1, alongside the SIP amount
     monthly_investment,     # rupees invested every month
@@ -139,6 +192,12 @@ def calculate_sip(
     real_value_filer = net_value_filer / inflation_factor
     real_value_nonfiler = net_value_nonfiler / inflation_factor
 
+    yearly_breakdown = _calculate_yearly_breakdown(
+        starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+        brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
+        cgt_filer_pct, cgt_nonfiler_pct
+    )
+
     return {
         "total_contributed": total_contributed,
         "total_purchase_fees": total_purchase_fees,
@@ -152,6 +211,7 @@ def calculate_sip(
         "net_value_nonfiler": net_value_nonfiler,
         "real_value_filer": real_value_filer,
         "real_value_nonfiler": real_value_nonfiler,
+        "yearly_breakdown": yearly_breakdown,
     }
 
 

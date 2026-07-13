@@ -441,3 +441,64 @@ input:checked + .slider:before {
 .layout .panel:nth-child(3) {
     animation-delay: 0.45s;
 }
+
+/* Projection Table Styles */
+.table-wrapper {
+    overflow-x: auto;
+    margin: 0 -16px;
+    padding: 0 16px;
+}
+
+.projection-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 400px;
+}
+
+.projection-table th {
+    text-align: left;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--panel-border);
+    border-top: 1px solid var(--panel-border);
+}
+
+.projection-table th:first-child,
+.projection-table td:first-child {
+    padding-left: 0;
+}
+
+.projection-table th:last-child,
+.projection-table td:last-child {
+    padding-right: 0;
+}
+
+.projection-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--panel-border);
+    font-size: 14px;
+}
+
+.projection-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.col-year {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.col-invested {
+    color: var(--text-muted);
+}
+
+.col-real {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+}
