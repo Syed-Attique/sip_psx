@@ -34,8 +34,10 @@ Every time a monthly deposit is made, buying shares incurs fees. These fees are 
 - **Sindh Sales Tax (SST):** `Brokerage Fee × SST Rate (e.g., 13%)`
 - **CDC Handling Fee:** `Investment × CDC Rate (e.g., 0.02%)`
 
-### 3. Annual Flat Fees
-The NCCPL/CDC account maintenance fee (e.g., Rs 700) is subtracted from the portfolio balance at the end of every 12th month.
+### 3. Annual Flat Fees & Step-Up SIP
+At the end of every 12th month:
+- The NCCPL/CDC account maintenance fee (e.g., Rs 700) is subtracted from the portfolio balance.
+- If an **Annual Step-Up (%)** is provided, the monthly investment amount is increased by this percentage for the following year to simulate salary growth and increasing contributions.
 
 ### 4. Capital Gains Tax (CGT)
 Calculated only on the **Net Profit**.

@@ -1,11 +1,12 @@
 def _validate_inputs(
-    starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+    starting_amount, monthly_investment, step_up_pct, years, annual_return_pct, inflation_pct,
     brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
     cgt_filer_pct, cgt_nonfiler_pct,
 ):
     numeric_fields = {
         "starting_amount": starting_amount,
         "monthly_investment": monthly_investment,
+        "step_up_pct": step_up_pct,
         "years": years,
         "annual_return_pct": annual_return_pct,
         "inflation_pct": inflation_pct,
@@ -35,6 +36,9 @@ def _validate_inputs(
             "At least one of starting_amount or monthly_investment must be "
             "greater than 0 - there's nothing to calculate otherwise"
         )
+
+    if step_up_pct < 0 or step_up_pct > 5000:
+        raise ValueError(f"step_up_pct must be between 0 and 5000, got {step_up_pct}")
 
     # 3. Duration must be positive and long enough to cover at least 1 month.
     #    We also cap it at 100 years to prevent Serverless loop exhaustion (DoS).
@@ -74,7 +78,7 @@ def _validate_inputs(
 
 
 def _calculate_yearly_breakdown(
-    starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+    starting_amount, monthly_investment, step_up_pct, years, annual_return_pct, inflation_pct,
     brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
     cgt_filer_pct, cgt_nonfiler_pct
 ):
@@ -86,9 +90,10 @@ def _calculate_yearly_breakdown(
     balance = 0.0
     total_contributed = 0.0
     cost_basis = 0.0
+    current_monthly_investment = monthly_investment
 
     for month in range(1, months + 1):
-        contribution = monthly_investment
+        contribution = current_monthly_investment
         if month == 1:
             contribution += starting_amount
 
@@ -102,6 +107,7 @@ def _calculate_yearly_breakdown(
 
         if month % 12 == 0:
             balance -= annual_flat_fee
+            current_monthly_investment *= (1 + step_up_pct / 100)
 
         total_contributed += contribution
         cost_basis += net_invested
@@ -129,6 +135,7 @@ def _calculate_yearly_breakdown(
 def calculate_sip(
     starting_amount,        # lump sum invested in month 1, alongside the SIP amount
     monthly_investment,     # rupees invested every month
+    step_up_pct,            # annual percentage increase in monthly investment
     years,                  # how long the SIP runs
     annual_return_pct,      # your assumed KSE-100 annual return, e.g. 14 for 14%
     inflation_pct,          # your assumed annual inflation, e.g. 10 for 10%
@@ -140,7 +147,7 @@ def calculate_sip(
     cgt_nonfiler_pct=30.0,  # capital gains tax rate if you're a non-filer
 ):
     _validate_inputs(
-        starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+        starting_amount, monthly_investment, step_up_pct, years, annual_return_pct, inflation_pct,
         brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
         cgt_filer_pct, cgt_nonfiler_pct,
     )
@@ -154,10 +161,11 @@ def calculate_sip(
     total_contributed = 0.0
     total_purchase_fees = 0.0
     cost_basis = 0.0
+    current_monthly_investment = monthly_investment
 
     for month in range(1, months + 1):
         # Step B — this month's contribution, fees, net invested
-        contribution = monthly_investment
+        contribution = current_monthly_investment
         if month == 1:
             contribution += starting_amount
 
@@ -173,6 +181,7 @@ def calculate_sip(
         # Step D — once a year, subtract the flat account fee
         if month % 12 == 0:
             balance -= annual_flat_fee
+            current_monthly_investment *= (1 + step_up_pct / 100)
 
         total_contributed += contribution
         total_purchase_fees += total_fee
@@ -193,7 +202,7 @@ def calculate_sip(
     real_value_nonfiler = net_value_nonfiler / inflation_factor
 
     yearly_breakdown = _calculate_yearly_breakdown(
-        starting_amount, monthly_investment, years, annual_return_pct, inflation_pct,
+        starting_amount, monthly_investment, step_up_pct, years, annual_return_pct, inflation_pct,
         brokerage_pct, sst_pct_of_brokerage, cdc_pct, annual_flat_fee,
         cgt_filer_pct, cgt_nonfiler_pct
     )
@@ -221,9 +230,14 @@ if __name__ == "__main__":
     result = calculate_sip(
         starting_amount=100000,
         monthly_investment=20000,
+        step_up_pct=10.0,
         years=1,
         annual_return_pct=14,
         inflation_pct=10,
     )
     for key, value in result.items():
-        print(f"{key:22s} = {value:,.2f}")
+        if key == "yearly_breakdown":
+            print(f"yearly_breakdown       = {len(value)} years calculated")
+        else:
+            print(f"{key:22s} = {value:,.2f}")
+

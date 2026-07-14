@@ -37,6 +37,7 @@ def api_calculate():
         result = calculate_sip(
             starting_amount=data["starting_amount"],
             monthly_investment=data["monthly_investment"],
+            step_up_pct=data.get("step_up_pct", 0.0),
             years=data["years"],
             annual_return_pct=data["annual_return_pct"],
             inflation_pct=data["inflation_pct"],

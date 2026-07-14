@@ -5,7 +5,7 @@ const fmt = (n) => {
 
 function readInputs() {
   const ids = [
-    "starting_amount", "monthly_investment", "years",
+    "starting_amount", "monthly_investment", "step_up_pct", "years",
     "annual_return_pct", "inflation_pct",
     "brokerage_pct", "sst_pct_of_brokerage", "cdc_pct",
     "annual_flat_fee",
